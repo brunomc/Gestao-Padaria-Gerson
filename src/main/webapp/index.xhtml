@@ -1,0 +1,271 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<h2>Gerenciamento de Contas das Padarias do Gerson</h2>
+</h:head>
+<h:body>
+	<p:layout style="height:100%">
+		<p:layoutUnit position="north" resizable="true" size="60" minSize="60"
+			maxSize="60">
+			<p:commandButton icon="ui-icon-plus" value="Nova Conta" type="button"
+				onclick="PF('dlg2').show();" update="@form" />
+			<p:commandButton icon="ui-icon-plus" value="Nova Unidade"
+				type="button" onclick="PF('dlg4').show();" update="@form" />
+			<p:commandButton icon="ui-icon-plus"
+				value="Mostrar Saldo das Unidades" type="button"
+				onclick="PF('dlg5').show();" update="@form" />
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center" resizable="true" size="600"
+			minSize="600" maxSize="600">
+			<h:form id="form1">
+				<p:dataTable widgetVar="listaData" var="conta"
+					value="#{contaBean.contas}"
+					emptyMessage="Não exitem contas cadastradas"
+					draggableColumns="true" sortBy="#{conta.descricao} asc" rows="10"
+					paginator="true" style="font-size:10pt;">
+					<p:column headerText="Descrição" sortBy="#{conta.descricao}"
+						filterBy="#{conta.descricao}" filterStyle="width:90%;">
+
+						<h:outputText value="#{conta.descricao}" />
+					</p:column>
+					<p:column headerText="Unidade Responsável" style="width:10%;"
+						sortBy="#{conta.unidade.name}" filterBy="#{conta.unidade.name}"
+						filterStyle="width:90%;">
+						<h:outputText value="#{conta.unidade.name}" />
+					</p:column>
+					<p:column headerText="Tipo" style="width:8%;"
+						sortBy="#{conta.tipo}" filterBy="#{conta.tipo}"
+						filterStyle="width:90%;">
+						<h:outputText value="#{conta.tipo}" />
+					</p:column>
+					<p:column headerText="Status" style="width:8%;"
+						sortBy="#{conta.status}" filterBy="#{conta.status}"
+						filterStyle="width:90%;">
+						<h:outputText value="#{conta.status}" />
+					</p:column>
+					<p:column headerText="Balanço Anterior" style="width:8%;"
+						sortBy="#{conta.bla}" filterBy="#{conta.bla}"
+						filterStyle="width:90%;">
+						<h:outputText value="#{conta.bla}" />
+					</p:column>
+
+					<p:column headerText="Balanço Posterior" style="width:8%;"
+						sortBy="#{conta.blp}" filterBy="#{conta.blp}"
+						filterStyle="width:90%;">
+						<h:outputText value="#{conta.blp}" />
+					</p:column>
+					<p:column headerText="Valor da Conta" style="width:8%;"
+						sortBy="#{conta.valor}" filterBy="#{conta.valor}"
+						filterStyle="width:90%;">
+						<h:outputText value="#{conta.valor}" />
+					</p:column>
+					<p:column headerText="Vencimento" style="width:10%;"
+						sortBy="#{conta.dataVencimento}"
+						filterBy="#{conta.dataVencimento}" filterStyle="width:90%;">
+						<h:outputText value="#{conta.dataVencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column style="width:8%;">
+						<p:commandButton icon="ui-icon-pencil" value="Editar"
+							action="#{contaBean.populaEdit(conta)}" update="@form" />
+
+					</p:column>
+					<p:column style="width:8%;">
+						<p:growl id="message" showDetail="true" />
+						<p:commandButton value="Excluir"
+							actionListener="#{contaBean.deletar(conta)}"
+							update="form1 message" process="@form">
+							<p:confirm header="Confirmação" message="Confirmar exclusão?"
+								icon="ui-icon-alert" />
+						</p:commandButton>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Confirmar" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="Cancelar" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+					</p:column>
+
+
+				</p:dataTable>
+			</h:form>
+		</p:layoutUnit>
+	</p:layout>
+	<p:dialog header="Incluir Conta" widgetVar="dlg2" modal="true"
+		height="60%" width="70%">
+
+		<h:form id="form">
+			<p:growl>
+			</p:growl>
+			<h:panelGroup>
+				<h:panelGrid columns="2">
+					<h:outputLabel for="btnSelect" value="Tipo de Conta:" />
+					<p:selectOneMenu id="btnSelect" value="#{contaBean.conta.tipo}">
+						<f:selectItems value="#{contaBean.tipos}" />
+					</p:selectOneMenu>
+					<h:outputLabel for="statusSelect" value="Status:" />
+					<p:selectOneMenu id="statusSelect"
+						value="#{contaBean.conta.status}" required="true">
+						<f:selectItems value="#{contaBean.status}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</h:panelGroup>
+			<p:separator />
+			<p:messages />
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Descrição:*" />
+				<p:inputText id="descricao" size="60"
+					value="#{contaBean.conta.descricao}" required="true"
+					label="Descricao"
+					placeholder="Descrição da conta (Ex: Pagamento conta de luz)">
+				</p:inputText>
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Valor:*" />
+				<p:inputNumber size="30" id="valor" value="#{contaBean.conta.valor}"
+					required="true" label="Valor" symbol=" BRL" decimalSeparator=","
+					thousandSeparator="." symbolPosition="s"
+					placeholder="Valor da conta(Ex: 200.00)"></p:inputNumber>
+
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Vencimento:*" />
+				<h:inputText value="#{contaBean.conta.dataVencimento}">
+					<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-3" />
+				</h:inputText>
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputLabel for="unidadeSelect" value="Unidade:" />
+				<p:selectOneMenu id="unidadeSelect"
+					value="#{contaBean.conta.unidade}" converter="unidadeConverter">
+					<f:selectItem itemLabel="Selecione uma Unidade" />
+					<f:selectItems value="#{contaBean.unidades}" var="und"
+						itemValue="#{und}" itemLabel="#{und.name}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:commandButton id="cadastrar" value="Cadastrar"
+					action="#{contaBean.salvar()}" update="listaData" ajax="false"
+					process="@form" />
+			</h:panelGrid>
+		</h:form>
+
+	</p:dialog>
+
+	<!-- MODAL EDITAR -->
+	<p:dialog id="dlg3" header="Editar Conta" widgetVar="dlg3" modal="true"
+		height="60%" width="70%">
+
+		<h:form id="formEditar">
+			<p:growl>
+			</p:growl>
+			<h:panelGroup>
+				<h:panelGrid columns="2">
+					<h:outputLabel for="btnSelect" value="Tipo de Conta:" />
+					<p:selectOneMenu id="btnSelect" value="#{contaBean.contaEdit.tipo}">
+						<f:selectItems value="#{contaBean.tipos}" />
+					</p:selectOneMenu>
+					<h:outputLabel for="statusSelect" value="Status:" />
+					<p:selectOneMenu id="statusSelect"
+						value="#{contaBean.contaEdit.status}" required="true">
+						<f:selectItems value="#{contaBean.status}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+			</h:panelGroup>
+			<p:separator />
+			<p:messages />
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Descrição:*" />
+				<p:inputText id="descricao" size="60"
+					value="#{contaBean.contaEdit.descricao}" required="true"
+					label="Descricao"
+					placeholder="Descrição da conta (Ex: Pagamento conta de luz)">
+				</p:inputText>
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Valor:*" />
+				<p:inputNumber size="30" id="valor"
+					value="#{contaBean.contaEdit.valor}" required="true" label="Valor"
+					symbol=" BRL" decimalSeparator="," thousandSeparator="."
+					symbolPosition="s" placeholder="Valor da conta(Ex: 200.00)"></p:inputNumber>
+
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputLabel for="unidadeSelect" value="Unidade:" />
+				<p:selectOneMenu id="unidadeSelect"
+					value="#{contaBean.contaEdit.unidade}" converter="unidadeConverter"
+					disabled="true">
+					<f:selectItems value="#{contaBean.unidades}" var="und"
+						itemValue="#{und}" itemLabel="#{und.name}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:commandButton id="salvar" value="Salvar"
+					action="#{contaBean.update()}" update="formEdit" ajax="false"
+					process="@form" />
+			</h:panelGrid>
+		</h:form>
+
+	</p:dialog>
+	<!-- INCLUIR UNIDADE -->
+	<p:dialog id="dlg4" header="Nova Unidade" widgetVar="dlg4" modal="true"
+		height="60%" width="70%">
+
+		<h:form id="formUnidade">
+			<p:growl>
+			</p:growl>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Nome da Unidade:*" />
+				<p:inputText id="nome" size="60" value="#{contaBean.unidade.name}"
+					required="true" label="Nome da Unidade"
+					placeholder="Nome da Unidade (Ex: Unidade Campinas)">
+				</p:inputText>
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<p:outputLabel value="Valor do Caixa:*" />
+				<p:inputNumber size="30" id="valorcaixa"
+					value="#{contaBean.unidade.balance}" required="true" label="Valor"
+					symbol=" BRL" decimalSeparator="," thousandSeparator="."
+					symbolPosition="s" placeholder="Valor em caixa(Ex: 200.00)"></p:inputNumber>
+
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:commandButton id="cadastrar" value="Cadastrar"
+					action="#{contaBean.salvarUnidade()}" update="listaData"
+					ajax="false" process="@form" />
+			</h:panelGrid>
+
+		</h:form>
+
+	</p:dialog>
+
+	<!-- FIM INCLUIR Unidade -->
+	<!-- SALDO UNIDADE -->
+	<p:dialog id="dlg5" header="Dados Unidades" widgetVar="dlg5"
+		modal="true" height="60%" width="70%">
+		<h:form id="formUnidadeSaldos">
+			<p:growl>
+			</p:growl>
+			<p:dataTable widgetVar="dataSaldos" var="unidade"
+				value="#{unidadeBean.listAll()}">
+				<p:column headerText="Nome da Unidade">
+					<h:outputText value="#{unidade.name}" />
+				</p:column>
+				<p:column headerText="Valor em Caixa">
+					<h:outputText value="#{unidade.balance}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+	</p:dialog>
+
+	<!-- FIM SALDO Unidade -->
+
+</h:body>
+</html>

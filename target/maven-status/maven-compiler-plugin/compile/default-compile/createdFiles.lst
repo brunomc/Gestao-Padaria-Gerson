@@ -1,0 +1,11 @@
+br\com\appGerson\converter\SimpleEntityConverter.class
+br\com\appGerson\entity\Conta.class
+br\com\appGerson\repository\UnidadeRepository.class
+br\com\appGerson\bean\UnidadeBean.class
+br\com\appGerson\converter\UnidadeConverter.class
+br\com\appGerson\service\UnidadeService.class
+br\com\appGerson\repository\ContaRepository.class
+br\com\appGerson\interfaces\BaseEntity.class
+br\com\appGerson\entity\Unidade.class
+br\com\appGerson\bean\ContaBean.class
+br\com\appGerson\service\ContaService.class
