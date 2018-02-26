@@ -54,25 +54,40 @@ public class ContaBean {
 		
     }
 	public void salvarUnidade() {
-		unidadeService.salvar(unidade);
-		init();
+		try {
+			unidadeService.salvar(unidade);
+			init();
+		} catch (Exception e) {
+			
+		}
+		
 	}
 	public void salvar(){
-		if(conta!= null) {
-			contaService.salvar(conta);
-			contas = contaService.listAll();
-			conta = new Conta();
-		}else {
-			
+		try {
+			if(conta!= null) {
+				contaService.salvar(conta);
+				contas = contaService.listAll();
+				conta = new Conta();
+			}else {
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+		
 	}
 	public void populaEdit(Conta conta) {
-		if(conta != null) {
-			 contaEdit = conta;
-		     RequestContext.getCurrentInstance().execute("PF('dlg3').show();");
-		     RequestContext.getCurrentInstance().update("formEditar");
-			
+		try {
+			if(conta != null) {
+				 contaEdit = conta;
+			     RequestContext.getCurrentInstance().execute("PF('dlg3').show();");
+			     RequestContext.getCurrentInstance().update("formEditar");
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+		
 	}
 	public void update() throws ExecutionException{
 		if(contaEdit!= null && contaEdit.getId()!=null) {
@@ -96,15 +111,21 @@ public class ContaBean {
 	}
 	
 	public void deletar(Conta contaDlt){
-		if(contaDlt!= null) {
-			contaService.deletar(contaDlt);
-			contas = contaService.listAll();
-		}else {
+		try {
+			if(contaDlt!= null) {
+				contaService.deletar(contaDlt);
+				contas = contaService.listAll();
+			}else {
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
+		
 		
 	}
 	
 	public List<Conta> listAll(){
+		
 		return contaService.listAll();
 	}
 	public List<Unidade> listAllUnd() {
